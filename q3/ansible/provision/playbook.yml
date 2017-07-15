@@ -34,20 +34,20 @@
     debug: msg="Install Puppet, Puppetmaster, and Facter"
     
   - name: Install Puppet
-    apt: 
-      name: puppet
+    apt:
+      name:  puppet
       state: present
     
   - name: Install Puppermaster
-    apt: 
+    apt:
       name: puppetmaster
       state: present
     
   - name: Install Facter
-    apt: 
+    apt:
       name: facter
       state: present
-    
+
   - name: Print Lab 3 Setup
     debug: msg="Remove old Docker packages and install Docker"
   
@@ -71,26 +71,8 @@
     become_method: sudo
     become_user: root
     apt:
-      update_cache=yes
-      cache_valid_time=3600
-    
-  - name: Install 'linux-image-extra-$(uname -r)' 
-    apt: 
-      name: linux-image-extra-$(uname -r)
-      state: present
-    
-  - name: Install 'linux-image-extra-virtual'
-    apt: 
-      name: linux-image-extra-virtual
-      state: present
-    
-  - name: update apt packages
-    become: true
-    become_method: sudo
-    become_user: root
-    apt:
-      update_cache=yes
-      cache_valid_time=3600
+      update_cache: yes
+      cache_valid_time: 3600
     
   - name: Install packages to to allow apt to use repo over HTTPS
     action: apt pkg={{item}} state=present
@@ -100,24 +82,24 @@
       - curl
       - software-properties-common
   
+  - name: Add Docker official DPG key
+    apt_key: 
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+  
+  - name: Add stable Docker repository
+    command: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    become: true
+    become_method: sudo
+    become_user: root
+
   - name: update apt packages
     become: true
     become_method: sudo
     become_user: root
     apt:
-      update_cache=yes
-      cache_valid_time=3600
-    
-  - name: Set up stable repository
-    command: deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable
-    
- - name: update apt packages
-    become: true
-    become_method: sudo
-    become_user: root
-    apt:
-      update_cache=yes
-      cache_valid_time=3600
+      update_cache: yes
+      cache_valid_time: 3600
     
   - name: Install 'docker-ce'
     apt: 
